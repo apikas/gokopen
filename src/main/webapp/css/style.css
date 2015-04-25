@@ -130,6 +130,11 @@ fieldset {
 .text {
     padding-bottom: 10px;
 }
+
+.small-text {
+	font-size: 0.7em
+}
+
 .odd {
     background: none repeat scroll 0 0 #EEF5FB;
 }

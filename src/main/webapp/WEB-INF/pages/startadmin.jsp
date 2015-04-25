@@ -16,6 +16,7 @@
 <li class="nav-item"><a href="${pageContext.request.contextPath}/admin/track">Klasser</a></li>
 <li class="nav-item"><a href="${pageContext.request.contextPath}/admin/user">Användare</a>
 <li class="nav-item"><a href="${pageContext.request.contextPath}/admin/config">Konfiguration</a>
+<li class="nav-item"><a href="${pageContext.request.contextPath}/admin/importpatrol">Importera patruller</a>
 <li class="nav-item"><a href="${pageContext.request.contextPath}/">Till huvudmenyn</a>
 </ul>
 </div>
