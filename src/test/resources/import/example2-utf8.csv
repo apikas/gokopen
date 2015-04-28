@@ -1,0 +1,6 @@
+"Kår","Tävling","Patrull","Antal scouter","Kontaktperson","E-post","Mobilnr","Åtgärd","Kommentar"
+"Svartbäcken","Spårare","Dubletterna",6,"Lasse Pontén","lars.ponten@ankeborg.com",,"Ny","Patrol already exists (will replace old patrol if imported)"
+"Svartbäcken","Upptäckare","Dubletterna",6,"Lasse Pontén","lars.ponten@ankeborg.com",,"Ny","Patrol already exists, but in a different class (will replace old patrol if imported)"
+"Ankeborg","Äventyrare","Gröngölingarna",3,"Kalle Anka","kalle.anka@ankeborg.com","012-345678","Ny","Nonexistent class"
+"Wasa","Spårare","Dubletterna",6,"Lasse Pontén","lars.ponten@ankeborg.com",,"Ny","Patrol with same name but different troop (allowed)"
+"Knivsta",,"Piruetterna",6,"Jan Banan",,,"Ny","Patrol with empty class (allowed)"

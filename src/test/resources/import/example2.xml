@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<patrols>
+    <patrol>
+        <leaderContact>Lasse Pontén</leaderContact>
+        <members>6</members>
+        <note>Patrol already exists (will replace old patrol if imported)
+Kontakt email: lars.ponten@ankeborg.com</note>
+        <patrolName>Dubletterna</patrolName>
+        <track>
+            <trackId>1</trackId>
+            <trackName>Spårare</trackName>
+        </track>
+        <troop>Svartbäcken</troop>
+        <action>Ny</action>
+        <contactEmail>lars.ponten@ankeborg.com</contactEmail>
+        <importComment>Patrullen finns redan.
+</importComment>
+        <memberCount>6</memberCount>
+        <shouldImport>false</shouldImport>
+        <trackName>Spårare</trackName>
+    </patrol>
+    <patrol>
+        <leaderContact>Lasse Pontén</leaderContact>
+        <members>6</members>
+        <note>Patrol already exists, but in a different class (will replace old patrol if imported)
+Kontakt email: lars.ponten@ankeborg.com</note>
+        <patrolName>Dubletterna</patrolName>
+        <track>
+            <trackId>2</trackId>
+            <trackName>Upptäckare</trackName>
+        </track>
+        <troop>Svartbäcken</troop>
+        <action>Ny</action>
+        <contactEmail>lars.ponten@ankeborg.com</contactEmail>
+        <importComment>Patrullen finns redan.
+</importComment>
+        <memberCount>6</memberCount>
+        <shouldImport>false</shouldImport>
+        <trackName>Upptäckare</trackName>
+    </patrol>
+    <patrol>
+        <leaderContact>Kalle Anka</leaderContact>
+        <members>3</members>
+        <note>Nonexistent class
+Kontakt mobil: 012-345678
+Kontakt email: kalle.anka@ankeborg.com</note>
+        <patrolName>Gröngölingarna</patrolName>
+        <troop>Ankeborg</troop>
+        <action>Ny</action>
+        <contactEmail>kalle.anka@ankeborg.com</contactEmail>
+        <contactMobile>012-345678</contactMobile>
+        <importComment>Okänd tävlingsklass 'Äventyrare'!
+</importComment>
+        <memberCount>3</memberCount>
+        <shouldImport>false</shouldImport>
+        <trackName>Äventyrare</trackName>
+    </patrol>
+    <patrol>
+        <leaderContact>Lasse Pontén</leaderContact>
+        <members>6</members>
+        <note>Patrol with same name but different troop (allowed)
+Kontakt email: lars.ponten@ankeborg.com</note>
+        <patrolName>Dubletterna</patrolName>
+        <track>
+            <trackId>1</trackId>
+            <trackName>Spårare</trackName>
+        </track>
+        <troop>Wasa</troop>
+        <action>Ny</action>
+        <contactEmail>lars.ponten@ankeborg.com</contactEmail>
+        <importComment></importComment>
+        <memberCount>6</memberCount>
+        <shouldImport>true</shouldImport>
+        <trackName>Spårare</trackName>
+    </patrol>
+    <patrol>
+        <leaderContact>Jan Banan</leaderContact>
+        <members>6</members>
+        <note>Patrol with empty class (allowed)</note>
+        <patrolName>Piruetterna</patrolName>
+        <troop>Knivsta</troop>
+        <action>Ny</action>
+        <importComment>Okänd tävlingsklass ''!
+</importComment>
+        <memberCount>6</memberCount>
+        <shouldImport>false</shouldImport>
+    </patrol>
+</patrols>
