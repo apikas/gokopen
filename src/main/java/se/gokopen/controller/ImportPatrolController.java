@@ -24,6 +24,16 @@ import se.gokopen.service.ImportPatrol;
 import se.gokopen.service.PatrolService;
 import se.gokopen.service.TrackService;
 
+/**
+ * Read patrols from an uploaded CSV file and offer to create them in the database.
+ * Header name matching against a fixed set of patterns is used, which is not the most convenient solution for a user,
+ * because the user may need to edit the column headers before import (which can be extra tricky if the CSV file uses a
+ * character encoding which is not the default used in the editor).
+ * An enhanced solution would be to present a list of property descriptions and a list of column header names from the
+ * first row in the CSV file, then let the user answer what property belongs in what column.
+ *
+ * @author Anders Pikas <anders@pikas.se>
+ */
 @RequestMapping(value = "/admin")
 @Controller
 public class ImportPatrolController {
@@ -31,107 +41,128 @@ public class ImportPatrolController {
     private TrackService trackService;
     @Autowired
     private PatrolService patrolService;
-    private ImportPatrol patrolImporter = new ImportPatrol();
+    private final ImportPatrol patrolImporter = new ImportPatrol();
 
+    /**
+     * Component used to transfer field descriptions to a JSP page and uploaded file from a JSP page.
+     *
+     * @author Anders Pikas <anders@pikas.se>
+     */
     @Component
     public static class Uploader {
         MultipartFile csvFile;
-        List<String> fieldDescriptions;
+        List<String> propertyDescriptions;
 
         public MultipartFile getCsvFile() {
-            return csvFile;
+            return this.csvFile;
         }
 
-        public void setCsvFile(MultipartFile file) {
+        public void setCsvFile(final MultipartFile file) {
             this.csvFile = file;
         }
 
-        public List<String> getFieldDescriptions() {
-            return fieldDescriptions;
+        public List<String> getPropertyDescriptions() {
+            return this.propertyDescriptions;
         }
 
-        public void setFieldDescriptions(List<String> fieldDescriptions) {
-            this.fieldDescriptions = fieldDescriptions;
+        public void setPropertyDescriptions(final List<String> propertyDescriptions) {
+            this.propertyDescriptions = propertyDescriptions;
         }
     }
 
     @ModelAttribute("tracks")
     public List<Track> populateTracks() {
-        return trackService.getAllTracks();
+        return this.trackService.getAllTracks();
     }
 
+    /**
+     * Show property descriptions and let the user upload a CSV file containing patrols.
+     *
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/importpatrol", method = RequestMethod.GET)
-    public ModelAndView importPatrol(HttpServletRequest request) {
-        //        Config config = configService.getCurrentConfig();
-        //         ModelMap map = new ModelMap();
-        //         map.put("import", config);
-        Uploader uploader = new Uploader();
-        uploader.setFieldDescriptions(patrolImporter.getFieldDescriptions());
+    public ModelAndView importPatrol(final HttpServletRequest request) {
+        final Uploader uploader = new Uploader();
+        uploader.setPropertyDescriptions(this.patrolImporter.getPropertyDescriptions());
         return new ModelAndView("importpatrol", "importpatrolmodel", uploader);
     }
 
+    /**
+     * Component used to transfer import information about the parsed patrols to a JSP page and what patrols are
+     * selected from a JSP page.
+     *
+     * @author Anders Pikas <anders@pikas.se>
+     */
     public static class SavePatrols {
         private String errormsg = null;
         private List<String> info = new LinkedList<>();
         private List<ImportPatrol.PatrolImplImport> patrols = new ArrayList<>();
 
         public String getErrormsg() {
-            return errormsg;
+            return this.errormsg;
         }
 
-        public void setErrormsg(String errormsg) {
+        public void setErrormsg(final String errormsg) {
             this.errormsg = errormsg;
         }
 
         public List<String> getInfo() {
-            return info;
+            return this.info;
         }
 
-        public void setInfo(List<String> info) {
+        public void setInfo(final List<String> info) {
             this.info = info;
         }
 
         public List<ImportPatrol.PatrolImplImport> getPatrols() {
-            return patrols;
+            return this.patrols;
         }
 
-        public void setPatrols(List<ImportPatrol.PatrolImplImport> patrols) {
+        public void setPatrols(final List<ImportPatrol.PatrolImplImport> patrols) {
             this.patrols = patrols;
         }
     }
 
+    /**
+     * Given an uploaded file, parse the patrols and create a list of patrols that are available for import.
+     *
+     * @param uploader
+     * @param errors
+     * @param request
+     * @param response
+     * @return
+     */
     @RequestMapping(value = "/importpatrol", method = RequestMethod.POST)
-    public ModelAndView postImportPatrol(Uploader uploader, BindingResult errors, HttpServletRequest request,
-        HttpServletResponse response) {
-        SavePatrols savePatrols = new SavePatrols();
+    public ModelAndView postImportPatrol(final Uploader uploader, final BindingResult errors,
+        final HttpServletRequest request, final HttpServletResponse response) {
+        final SavePatrols savePatrols = new SavePatrols();
         if (uploader.csvFile == null || uploader.csvFile.isEmpty()) {
             savePatrols.setErrormsg("Filen är tom, uppladdningen misslyckades!");
         }
-        String name = uploader.csvFile.getOriginalFilename();
+        final String name = uploader.csvFile.getOriginalFilename();
         System.out.println(name);
         System.out.println(uploader.csvFile.getSize());
         System.out.println("Upload");
 
-        List<PatrolImpl> oldPatrols = patrolService.getAllPatrols();
-        List<Track> tracks = populateTracks();
+        final List<PatrolImpl> oldPatrols = this.patrolService.getAllPatrols();
+        final List<Track> tracks = populateTracks();
         System.out.println(tracks);
-        List<String> messages = new LinkedList<String>();
+        final List<String> messages = new LinkedList<String>();
         try {
-            List<ImportPatrol.PatrolImplImport> patrolList =
-                patrolImporter.importCSVstream(uploader.csvFile.getInputStream(), messages);
+            final List<ImportPatrol.PatrolImplImport> patrolList =
+                this.patrolImporter.importCSVstream(uploader.csvFile.getInputStream(), messages);
             System.out.println(messages);
             savePatrols.info = messages;
             if (patrolList == null) {
                 savePatrols.setErrormsg("Importen misslyckades.");
             } else {
-                for (ImportPatrol.PatrolImplImport p : patrolList) {
-                    p.checkPatrolImport(tracks, oldPatrols);
-                    System.out.printf("Patrull %s: %s %s %s\n", p.getPatrolName(), p.getShouldImport(),
-                        p.getTrack() == null ? "?" : p.getTrack().getTrackName(), p.getNote());
+                for (final ImportPatrol.PatrolImplImport p : patrolList) {
+                    p.setPatrolFields(tracks, oldPatrols);
                 }
                 savePatrols.setPatrols(patrolList);
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             savePatrols.setErrormsg("Importen misslyckades.");
         }
@@ -139,30 +170,40 @@ public class ImportPatrolController {
         return new ModelAndView("importpatrolsave", "savepatrolmodel", savePatrols);
     }
 
+    /**
+     * Given a list of selected patrols, create or replace patrols in the database.
+     * TODO: create a page showing the results, including a back link.
+     *
+     * @param savepatrols
+     * @param errors
+     * @param request
+     * @param response
+     * @return
+     */
     @RequestMapping(value = "/importpatrolsave", method = RequestMethod.POST)
-    public @ResponseBody String postImportPatrolSave(SavePatrols savepatrols, BindingResult errors,
-        HttpServletRequest request, HttpServletResponse response) {
+    public @ResponseBody String postImportPatrolSave(final SavePatrols savepatrols, final BindingResult errors,
+        final HttpServletRequest request, final HttpServletResponse response) {
         int saved = 0;
         int replaced = 0;
         int failed = 0;
-        List<Track> tracks = populateTracks();
-        List<PatrolImpl> oldPatrols = patrolService.getAllPatrols();
-        for (ImportPatrol.PatrolImplImport p : savepatrols.getPatrols()) {
+        final List<Track> tracks = populateTracks();
+        final List<PatrolImpl> oldPatrols = this.patrolService.getAllPatrols();
+        for (final ImportPatrol.PatrolImplImport p : savepatrols.getPatrols()) {
             try {
                 if (p.getShouldImport()) {
                     System.out.printf("Sparar patrull %s: %s %s %s\n", p.getPatrolName(), p.getShouldImport(),
                         p.getTrack() == null ? "?" : p.getTrack().getTrackName(), p.getNote());
                     p.fixPatrolTrack(tracks); // Find the track from the track name
-                    Integer patrolId = p.findOldPatrol(oldPatrols);
+                    final Integer patrolId = p.findOldPatrol(oldPatrols);
                     if (patrolId != null) {
                         replaced++;
                         System.out.printf("Replacing patrol id %d\n", patrolId);
-                        patrolService.deletePatrolById(patrolId);
+                        this.patrolService.deletePatrolById(patrolId);
                     }
-                    patrolService.savePatrol(p.clonePatrol());
+                    this.patrolService.savePatrol(p.clonePatrol());
                     saved++;
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 failed++;
                 e.printStackTrace();
             }

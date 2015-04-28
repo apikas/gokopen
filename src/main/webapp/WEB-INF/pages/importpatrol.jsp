@@ -16,11 +16,11 @@
 	<h1>Importera patruller</h1>
 	Välj en fil med patruller i CSV-format. När filen lästs så visas en
 	lista över patruller som kan importeras. Filen kan ha någon av
-	teckenkodningarna UTF8, ISO8859-1 (Windows, Latin-1), MacRoman, och
+	teckenkodningarna UTF8, ISO8859-1 (WINDOWS-1252, Latin-1), MacRoman, och
 	många fler. Såväl kommatecken som semikolon kan användas som
 	kolumnseparator.
 	<br />
-	<c:if test="${not empty importpatrolmodel.fieldDescriptions }">
+	<c:if test="${not empty importpatrolmodel.propertyDescriptions }">
 		Första raden i filen ska innehålla rubriker, t.ex. följande:<br />
 		<div class="code">Kår, Tävling, Patrull, Antal scouter,
 			Kontaktperson, E-post, Mobilnr, Åtgärd, Kommentar</div>
@@ -28,7 +28,7 @@
 		Följande rubriker känns igen:
 		<div>
 			<ul class="small-text">
-				<c:forEach items="${importpatrolmodel.fieldDescriptions}"
+				<c:forEach items="${importpatrolmodel.propertyDescriptions}"
 					var="description" varStatus="status">
 					<li>${description}</li>
 				</c:forEach>
